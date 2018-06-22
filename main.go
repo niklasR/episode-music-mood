@@ -19,14 +19,14 @@ import (
 	"golang.org/x/oauth2/clientcredentials"
 )
 
-type Configuration struct {
-	CERT_FILE             string `json:"certFile"`
-	KEY_FILE              string `json:"keyFile"`
-	SPOTIFY_CLIENT_ID     string `json:"spotifyClientId"`
-	SPOTIFY_CLIENT_SECRET string `json:"spotifyClientSecret"`
-	MUSIC_URL             string `json:"musicUrl"`
-	IBL_URL               string `json:"iblUrl"`
-	PLAYLISTER_URL        string `json:"playlisterUrl"`
+type configuration struct {
+	CertFile            string `json:"certFile"`
+	KeyFile             string `json:"keyFile"`
+	SpotifyClientID     string `json:"spotifyClientId"`
+	SpotifyClientSecret string `json:"spotifyClientSecret"`
+	MusicURL            string `json:"musicUrl"`
+	IBLUrl              string `json:"iblUrl"`
+	PlaylisterURL       string `json:"playlisterUrl"`
 }
 
 type errorMessage struct {
@@ -76,8 +76,8 @@ type mood struct {
 	HappinessFactor float32 `json:"happinessFactor"`
 }
 
-func getConfiguration() Configuration {
-	configuration := Configuration{}
+func getConfiguration() configuration {
+	configuration := configuration{}
 	err := gonfig.GetConf("./config.json", &configuration)
 	if err != nil {
 		returnError(err.Error())
@@ -99,7 +99,7 @@ func getConfiguration() Configuration {
 
 func getRecordIDs(versionID string) []string {
 	configuration := getConfiguration()
-	url := fmt.Sprintf(configuration.PLAYLISTER_URL, versionID)
+	url := fmt.Sprintf(configuration.PlaylisterURL, versionID)
 
 	res := playlisterResponse{}
 	httpRes, err := http.Get(url)
@@ -121,7 +121,7 @@ func getRecordIDs(versionID string) []string {
 
 func getVersionID(episodeID string) (string, error) {
 	configuration := getConfiguration()
-	url := fmt.Sprintf(configuration.IBL_URL, episodeID)
+	url := fmt.Sprintf(configuration.IBLUrl, episodeID)
 
 	epResp1 := iblEpisodesResponse{}
 	res, err := http.Get(url)
@@ -143,8 +143,8 @@ func getVersionID(episodeID string) (string, error) {
 
 func getExternalLinks(recordID string) []externalLink {
 	configuration := getConfiguration()
-	url := fmt.Sprintf(configuration.MUSIC_URL, recordID)
-	cert, err := tls.LoadX509KeyPair(configuration.CERT_FILE, configuration.KEY_FILE)
+	url := fmt.Sprintf(configuration.MusicURL, recordID)
+	cert, err := tls.LoadX509KeyPair(configuration.CertFile, configuration.KeyFile)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -171,8 +171,8 @@ func getExternalLinks(recordID string) []externalLink {
 func getSpotifyData(trackIDs []spotify.ID) []spotifyTrackData {
 	configuration := getConfiguration()
 	config := &clientcredentials.Config{
-		ClientID:     configuration.SPOTIFY_CLIENT_ID,
-		ClientSecret: configuration.SPOTIFY_CLIENT_SECRET,
+		ClientID:     configuration.SpotifyClientID,
+		ClientSecret: configuration.SpotifyClientSecret,
 		TokenURL:     spotify.TokenURL,
 	}
 
