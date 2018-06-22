@@ -126,7 +126,7 @@ func getVersionID(episodeID string) (string, error) {
 	epResp1 := iblEpisodesResponse{}
 	res, err := http.Get(url)
 	if err != nil {
-		returnError("Failed to get Episode Information")
+		returnError("Failed to get Episode Information: " + err.Error())
 	}
 	body, _ := ioutil.ReadAll(res.Body)
 
