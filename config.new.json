@@ -1,0 +1,9 @@
+{
+  "certFile": "",
+  "keyFile": "",
+  "spotifyClientId": "",
+  "spotifyClientSecret": "",
+  "musicUrl": "someurl",
+  "iblUrl": "",
+  "playlisterUrl": ""
+}
